@@ -93,7 +93,12 @@ async function run() {
       const result = await myBillsCollection.deleteOne(filter);
       res.send(result);
     });
-
+    //  add bills
+    app.post("/bills", async (req, res) => {
+      const data = req.body;
+      const result = await billsCollection.insertOne(data)
+      res.send(result);
+    });
     // await client.db("admin").command({ ping: 1 });
     console.log("✅ Connected to MongoDB successfully!");
   } catch (err) {
