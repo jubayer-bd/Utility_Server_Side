@@ -30,37 +30,48 @@ async function run() {
 
     const db = client.db(process.env.DB_NAME);
     const billsCollection = db.collection("bills");
+    const myBillsCollection = db.collection("my-bills");
 
-    // get all models
+    // get all bills
+    app.get("/bills", async (req, res) => {
+      const result = await billsCollection.find().toArray();
+      res.send(result);
+    });
+
     app.get("/latest-bills", async (req, res) => {
       const result = await billsCollection.find().limit(6).toArray();
       res.send(result);
     });
 
-    // get single model by ID
-    app.get("/models/:id", async (req, res) => {
+    // get single bills by ID
+    app.get("/bills/:id", async (req, res) => {
       const { id } = req.params;
-      const result = await modelCollection.findOne({ _id: new ObjectId(id) });
+      const result = await billsCollection.findOne({ _id: new ObjectId(id) });
       res.send(result);
     });
 
-    // get latest models
-    app.get("/latest-models", async (req, res) => {
-      const result = await modelCollection
-        .find()
-        .sort({ created_at: -1 })
-        .limit(6)
-        .toArray();
-      res.send(result);
-    });
+    // get latest bids
+    // app.get("/latest-models", async (req, res) => {
+    //   const result = await modelCollection
+    //     .find()
+    //     .sort({ created_at: -1 })
+    //     .limit(6)
+    //     .toArray();
+    //   res.send(result);
+    // });
 
-    // insert model
-    app.post("/models", async (req, res) => {
+    // insert my-bills
+    app.post("/my-bills", async (req, res) => {
       const data = req.body;
-      const result = await modelCollection.insertOne(data);
+      const result = await myBillsCollection.insertOne(data);
       res.send(result);
     });
-
+    // get bill by email
+    app.get("/my-bills", async (req, res) => {
+      const email = req.query.email;
+      const bills = await myBillsCollection.find({ email }).toArray();
+      res.send(bills);
+    });
     // update model
     app.put("/models/:id", async (req, res) => {
       const { id } = req.params;
