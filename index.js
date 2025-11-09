@@ -69,8 +69,8 @@ async function run() {
     // get bill by email
     app.get("/my-bills", async (req, res) => {
       const email = req.query.email;
-      const bills = await myBillsCollection.find({ email }).toArray();
-      res.send(bills);
+      const myBills = await myBillsCollection.find({ email }).toArray();
+      res.send(myBills);
     });
     // update model
     app.put("/models/:id", async (req, res) => {
