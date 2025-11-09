@@ -72,13 +72,13 @@ async function run() {
       const myBills = await myBillsCollection.find({ email }).toArray();
       res.send(myBills);
     });
-    // update model
-    app.put("/models/:id", async (req, res) => {
+    // update my bills by id
+    app.put("/my-bills/:id", async (req, res) => {
       const { id } = req.params;
       const data = req.body;
       const filter = { _id: new ObjectId(id) };
       const update = { $set: data };
-      const result = await modelCollection.updateOne(filter, update);
+      const result = await myBillsCollection.updateOne(filter, update);
       res.send(result);
     });
 
