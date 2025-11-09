@@ -26,7 +26,7 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-    await client.connect();
+    // await client.connect();
 
     const db = client.db(process.env.DB_NAME);
     const billsCollection = db.collection("bills");
@@ -34,7 +34,9 @@ async function run() {
 
     // get all bills
     app.get("/bills", async (req, res) => {
-      const result = await billsCollection.find().toArray();
+      const category = req.query.category;
+      const query = category ? { category } : {};
+      const result = await billsCollection.find(query).toArray();
       res.send(result);
     });
 
@@ -49,6 +51,8 @@ async function run() {
       const result = await billsCollection.findOne({ _id: new ObjectId(id) });
       res.send(result);
     });
+
+    // GET /api/bills?category=Electricity
 
     // get latest bids
     // app.get("/latest-models", async (req, res) => {
@@ -90,7 +94,7 @@ async function run() {
       res.send(result);
     });
 
-    await client.db("admin").command({ ping: 1 });
+    // await client.db("admin").command({ ping: 1 });
     console.log("✅ Connected to MongoDB successfully!");
   } catch (err) {
     console.error("❌ MongoDB Connection Error:", err);
