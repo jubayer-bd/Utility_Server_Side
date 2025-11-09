@@ -82,11 +82,11 @@ async function run() {
       res.send(result);
     });
 
-    // delete model
-    app.delete("/models/:id", async (req, res) => {
+    // delete bills
+    app.delete("/my-bills/:id", async (req, res) => {
       const { id } = req.params;
       const filter = { _id: new ObjectId(id) };
-      const result = await modelCollection.deleteOne(filter);
+      const result = await myBillsCollection.deleteOne(filter);
       res.send(result);
     });
 
