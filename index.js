@@ -52,18 +52,7 @@ async function run() {
       res.send(result);
     });
 
-    // GET /api/bills?category=Electricity
-
-    // get latest bids
-    // app.get("/latest-models", async (req, res) => {
-    //   const result = await modelCollection
-    //     .find()
-    //     .sort({ created_at: -1 })
-    //     .limit(6)
-    //     .toArray();
-    //   res.send(result);
-    // });
-
+    
     // insert my-bills
     app.post("/my-bills", async (req, res) => {
       const data = req.body;
