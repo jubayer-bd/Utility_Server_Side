@@ -13,7 +13,7 @@ Hosted on **Vercel**
 ## 🚀 Server Site
 
 Hosted on **Vercel**  
-🔗 [Live Link]((https://utility-bills-server-side.vercel.app/)
+🔗 [Live Link](https://utility-bills-server-side.vercel.app/)
 
 
 ---
