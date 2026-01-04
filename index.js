@@ -34,10 +34,46 @@ async function run() {
 
     // get all bills
     app.get("/bills", async (req, res) => {
-      const category = req.query.category;
-      const query = category ? { category } : {};
-      const result = await billsCollection.find(query).toArray();
-      res.send(result);
+      try {
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 8;
+        const skip = (page - 1) * limit;
+
+        const category = req.query.category;
+        const search = req.query.search || "";
+
+        // Build the Query
+        let query = {};
+
+        // 1. Filter by Category if not "All"
+        if (category && category !== "All") {
+          query.category = category;
+        }
+
+        // 2. Filter by Search (Title) using Regex
+        if (search) {
+          query.title = { $regex: search, $options: "i" }; // 'i' makes it case-insensitive
+        }
+
+        // Get Total Count (for pagination calculation on frontend)
+        const totalBills = await billsCollection.countDocuments(query);
+
+        // Get Specific Data with Skip and Limit
+        const result = await billsCollection
+          .find(query)
+          .skip(skip)
+          .limit(limit)
+          .toArray();
+
+        res.send({
+          bills: result,
+          totalBills,
+          currentPage: page,
+          totalPages: Math.ceil(totalBills / limit),
+        });
+      } catch (error) {
+        res.status(500).send({ message: "Error fetching bills", error });
+      }
     });
 
     app.get("/latest-bills", async (req, res) => {
@@ -52,7 +88,6 @@ async function run() {
       res.send(result);
     });
 
-    
     // insert my-bills
     app.post("/my-bills", async (req, res) => {
       const data = req.body;
@@ -85,7 +120,7 @@ async function run() {
     //  add bills
     app.post("/bills", async (req, res) => {
       const data = req.body;
-      const result = await billsCollection.insertOne(data)
+      const result = await billsCollection.insertOne(data);
       res.send(result);
     });
     // await client.db("admin").command({ ping: 1 });
